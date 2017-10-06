@@ -1,6 +1,8 @@
 defmodule ParticleWeb.UserSocket do
   use Phoenix.Socket
 
+  require Logger
+
   ## Channels
   # channel "room:*", ParticleWeb.RoomChannel
   channel "d3:*", ParticleWeb.D3Channel
@@ -21,13 +23,14 @@ defmodule ParticleWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   def connect(%{"token" => token}, socket) do
-    IO.puts "Connecting with #{token}"
-    auth = Phoenix.Token.verify(socket, "token", token) # expires 86400
+    # max_age: 1209600 is equivalent to two weeks in seconds
+    auth = Phoenix.Token.verify(socket, "token", token, max_age: 1209600) # expires 86400
     case auth do
-      {:ok, verified_user_id} ->
-        IO.puts "Verified User: #{verified_user_id}"
-        {:ok, assign(socket, :user_id, verified_user_id)}
-      {:error, _} -> :error
+      {:ok, user_id} ->
+        {:ok, assign(socket, :user_id, user_id)}
+      {:error, _} ->
+        Logger.warn "Invalid Token #{token} attempt."
+        :error
     end
   end
   def connect(_params, socket) do
