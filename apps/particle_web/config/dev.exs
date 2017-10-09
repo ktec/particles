@@ -7,7 +7,7 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
 config :particle_web, ParticleWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: 4000, ip: {0,0,0,0}],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -40,5 +40,3 @@ config :particle_web, ParticleWeb.Endpoint,
       ~r{lib/particle_web/templates/.*(eex)$}
     ]
   ]
-
-
